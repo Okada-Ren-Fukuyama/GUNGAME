@@ -1,0 +1,42 @@
+# ========== Unity Generated Folders ==========
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+UserSettings/
+Assets/AssetStoreTools*
+
+# ========== IDE / Editor ==========
+.vscode/
+.idea/
+*.suo
+*.user
+*.userprefs
+*.csproj
+*.pidb
+*.sln
+*.sln.docstates
+*.tmp
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# ========== Build Artifacts ==========
+*.apk
+*.aab
+*.unitypackage
+*.app
+*.exe
+*.ipa
+
+# ========== Unity Package Cache (重いライブラリ類) ==========
+[Pp]ackages/PackageCache/
+
+# ========== Crashlytics / Firebase ==========
+crashlytics-build.properties
