@@ -30,6 +30,10 @@ public class TargetSpawner : MonoBehaviour
 
     void SpawnTarget()
     {
+
+        // 消えた的(null)をリストから削除
+        spawnedTargets.RemoveAll(t => t == null);
+
         // 安全なランダム位置を探す
         Vector2 randomPos = GetRandomPositionInArea();
 
@@ -71,6 +75,11 @@ public class TargetSpawner : MonoBehaviour
 
         // 20回試しても安全な場所がない場合は出さない
         return Vector2.zero;
+    }
+
+    void Update()
+    {
+        spawnedTargets.RemoveAll(t => t == null);
     }
 }
 
