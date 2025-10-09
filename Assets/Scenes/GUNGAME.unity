@@ -834,7 +834,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetPrefab: {fileID: 6899679453590837442, guid: 122bfbefa0bb4f042b32cd089b342850, type: 3}
   targetArea: {fileID: 842786569}
-  spawnInterval: 1.5
+  minSpawnInterval: 1
+  maxSpawnInterval: 2.5
+  minSpawnCount: 1
+  maxSpawnCount: 3
   marginX: 150
   marginY: 100
   minDistance: 120
+  rareChance: 0.2
