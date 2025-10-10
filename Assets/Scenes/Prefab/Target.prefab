@@ -136,3 +136,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   minLifeTime: 2
   maxLifeTime: 6
+  minScale: 0.6
+  maxScale: 1.2
+  rarityPower: 1
+  rareThreshold: 0.75
+  normalColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  rareColor: {r: 1, g: 0, b: 0, a: 1}
+  rareLifeMultiplier: 0.4

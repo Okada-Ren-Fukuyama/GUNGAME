@@ -1,62 +1,111 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TargetSpawner : MonoBehaviour
 {
-    [Header("“I‚ÌPrefab")]
+    [Header("çš„ã®Prefab")]
     public GameObject targetPrefab;
 
-    [Header("“I‚ğo‚·”ÍˆÍ(UI‚ÌRectTransform)")]
+    [Header("çš„ã‚’å‡ºã™ç¯„å›²(UIã®RectTransform)")]
     public RectTransform targetArea;
 
-    [Header("¶¬ŠÔŠu(•b)")]
-    public float spawnInterval = 1.5f;
+    [Header("ç”Ÿæˆé–“éš”ã®æœ€å°/æœ€å¤§(ç§’)")]
+    public float minSpawnInterval = 1.0f;
+    public float maxSpawnInterval = 2.5f;
 
-    [Header("ƒGƒŠƒA‚Ì—]”’i¶‰EEã‰º‚Ì’²®j")]
+    [Header("ä¸€åº¦ã«å‡ºã™çš„ã®æœ€å°æ•°")]
+    public int minSpawnCount = 1;
+
+    [Header("ä¸€åº¦ã«å‡ºã™çš„ã®æœ€å¤§æ•°")]
+    public int maxSpawnCount = 3;
+
+    [Header("ã‚¨ãƒªã‚¢ã®ä½™ç™½ï¼ˆå·¦å³ãƒ»ä¸Šä¸‹ã®èª¿æ•´ï¼‰")]
     public float marginX = 100f;
     public float marginY = 80f;
 
-    [Header("“I‚ÌŠÔŠui”í‚è–h~j")]
-    public float minDistance = 120f; // “I“¯m‚ÌÅ¬‹——£(px)
+    [Header("çš„ã®é–“éš”ï¼ˆè¢«ã‚Šé˜²æ­¢ï¼‰")]
+    public float minDistance = 120f;
 
-    // Œ»İ‚Ì“I‚ğ•Û
+    [Header("ãƒ¬ã‚¢çš„ã®å‡ºç¾ç¢ºç‡(0ã€œ1)")]
+    [Range(0f, 1f)] public float rareChance = 0.2f;
+
     private List<GameObject> spawnedTargets = new List<GameObject>();
 
     void Start()
     {
-        InvokeRepeating(nameof(SpawnTarget), 1f, spawnInterval);
+        StartCoroutine(SpawnLoop());
+    }
+
+    IEnumerator SpawnLoop()
+    {
+        while (true)
+        {
+            SpawnTarget();
+
+            // æ¬¡ã®ç”Ÿæˆã¾ã§ãƒ©ãƒ³ãƒ€ãƒ ã§å¾…ã¤
+            float wait = Random.Range(minSpawnInterval, maxSpawnInterval);
+            yield return new WaitForSeconds(wait);
+        }
     }
 
     void SpawnTarget()
     {
-
-        // Á‚¦‚½“I(null)‚ğƒŠƒXƒg‚©‚çíœ
         spawnedTargets.RemoveAll(t => t == null);
 
-        // ˆÀ‘S‚Èƒ‰ƒ“ƒ_ƒ€ˆÊ’u‚ğ’T‚·
-        Vector2 randomPos = GetRandomPositionInArea();
+        int spawnCount = Random.Range(minSpawnCount, maxSpawnCount + 1);
+        bool rareSpawned = false;
 
-
-        if (randomPos != Vector2.zero)
+        for (int i = 0; i < spawnCount; i++)
         {
+            Vector2 randomPos = GetSafeRandomPosition();
+            if (randomPos == Vector2.zero) continue;
+
             GameObject target = Instantiate(targetPrefab, targetArea);
             target.transform.position = randomPos;
             spawnedTargets.Add(target);
+
+            // --- ã“ã“ã§ãƒ¬ã‚¢åˆ¤å®šã‚’SpawnerãŒæ±ºã‚ã‚‹ ---
+            bool makeRare = !rareSpawned && Random.value < rareChance;
+
+            Image img = target.GetComponent<Image>();
+            if (img != null)
+            {
+                if (makeRare)
+                {
+                    rareSpawned = true;
+                    img.color = Color.red;
+
+                    // Targetã‚¹ã‚¯ãƒªãƒ—ãƒˆãŒã‚ã‚‹ãªã‚‰ isRare = true ã‚’è¨­å®š
+                    Target t = target.GetComponent<Target>();
+                    if (t != null)
+                        t.SetRare(true);
+                }
+                else
+                {
+                    img.color = Color.gray;
+                    Target t = target.GetComponent<Target>();
+                    if (t != null)
+                        t.SetRare(false);
+                }
+            }
         }
     }
 
-    Vector2 GetRandomPositionInArea()
+
+
+
+    Vector2 GetSafeRandomPosition()
     {
         Vector2 areaSize = targetArea.rect.size;
-        for (int i = 0; i < 20; i++) // Å‘å20‰ñ‚·
+        for (int i = 0; i < 20; i++)
         {
             float x = Random.Range(-areaSize.x / 2 + marginX, areaSize.x / 2 - marginX);
             float y = Random.Range(-areaSize.y / 2 + marginY, areaSize.y / 2 - marginY);
             Vector2 localPos = new Vector2(x, y);
             Vector2 worldPos = targetArea.TransformPoint(localPos);
 
-            // ‘¼‚Ì“I‚Æ‹——£ƒ`ƒFƒbƒN
             bool tooClose = false;
             foreach (var t in spawnedTargets)
             {
@@ -73,7 +122,6 @@ public class TargetSpawner : MonoBehaviour
                 return worldPos;
         }
 
-        // 20‰ñ‚µ‚Ä‚àˆÀ‘S‚ÈêŠ‚ª‚È‚¢ê‡‚Ío‚³‚È‚¢
         return Vector2.zero;
     }
 
@@ -82,6 +130,7 @@ public class TargetSpawner : MonoBehaviour
         spawnedTargets.RemoveAll(t => t == null);
     }
 }
+
 
 
 
