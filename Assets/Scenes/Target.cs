@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
-public class Target : MonoBehaviour
+public class Target : MonoBehaviour, IPointerClickHandler
 {
     [Header("寿命（秒）")]
     public float minLifeTime = 2f;
@@ -80,6 +81,12 @@ public class Target : MonoBehaviour
         if (image == null) image = GetComponent<Image>();
         if (image != null)
             image.color = isRare ? rareColor : normalColor;
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        Debug.Log("ターゲットクリック！");
+        Destroy(gameObject);
     }
 }
 
