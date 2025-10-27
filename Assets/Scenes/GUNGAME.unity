@@ -615,6 +615,11 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -100}
   m_SizeDelta: {x: 1800, y: 700}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1218295655 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2642273200817267833, guid: 456e0d3329e298d49af46502d92e812e, type: 3}
+  m_PrefabInstance: {fileID: 2642273202122416903}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1233822491
 GameObject:
   m_ObjectHideFlags: 0
@@ -656,6 +661,30 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 2642273200817267832, guid: 456e0d3329e298d49af46502d92e812e, type: 3}
   m_PrefabInstance: {fileID: 2642273202122416903}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1379207040 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2642273200817267847, guid: 456e0d3329e298d49af46502d92e812e, type: 3}
+  m_PrefabInstance: {fileID: 2642273202122416903}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1218295655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1379207042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1218295655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1eba3d02f612b843bb2d755ab2a52b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  scoreText: {fileID: 1379207040}
 --- !u!114 &1806308861 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5584537631258809665, guid: 61623dc95fe20254b89050d5218c31cc, type: 3}
@@ -958,9 +987,25 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4840552560927777329, guid: 87446c8da2fa1c242a17d2f6e72e79d5, type: 3}
+      propertyPath: badChance
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4840552560927777329, guid: 87446c8da2fa1c242a17d2f6e72e79d5, type: 3}
+      propertyPath: rareChance
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4840552560927777329, guid: 87446c8da2fa1c242a17d2f6e72e79d5, type: 3}
       propertyPath: targetArea
       value: 
       objectReference: {fileID: 842786569}
+    - target: {fileID: 4840552560927777329, guid: 87446c8da2fa1c242a17d2f6e72e79d5, type: 3}
+      propertyPath: maxSpawnCount
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4840552560927777329, guid: 87446c8da2fa1c242a17d2f6e72e79d5, type: 3}
+      propertyPath: minSpawnCount
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4840552560927777331, guid: 87446c8da2fa1c242a17d2f6e72e79d5, type: 3}
       propertyPath: m_Name
       value: TargetSpawner
