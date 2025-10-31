@@ -1,19 +1,19 @@
-using UnityEngine;
-using UnityEngine.UI; // Text (Legacy) ‚Ìê‡
-// using TMPro; // Text Mesh Pro ‚Ìê‡
+ï»¿using UnityEngine;
+using UnityEngine.UI; // Text (Legacy) ã®å ´åˆ
+// using TMPro; // Text Mesh Pro ã®å ´åˆ
 
 public class TimerController : MonoBehaviour
 {
-    // §ŒÀŠÔ‚ğInspector‚©‚çİ’è (—á: 120.0f ‚Å 2•ª)
+    // åˆ¶é™æ™‚é–“ã‚’Inspectorã‹ã‚‰è¨­å®š (ä¾‹: 120.0f ã§ 2åˆ†)
     public float timeLimit = 60.0f;
 
-    // Œ»İ‚Ìc‚èŠÔ
+    // ç¾åœ¨ã®æ®‹ã‚Šæ™‚é–“
     private float currentTime;
 
-    // ‰æ–Ê‚ÉŠÔ‚ğ•\¦‚·‚é‚½‚ß‚ÌUIƒRƒ“ƒ|[ƒlƒ“ƒg
-    public Text timerText; // TextMeshPro‚Ìê‡‚Í public TMPro.TextMeshProUGUI timerText;
+    // ç”»é¢ã«æ™‚é–“ã‚’è¡¨ç¤ºã™ã‚‹ãŸã‚ã®UIã‚³ãƒ³ãƒãƒ¼ãƒãƒ³ãƒˆ
+    public Text timerText; // TextMeshProã®å ´åˆã¯ public TMPro.TextMeshProUGUI timerText;
 
-    private bool isTimeUp = false; // ŠÔØ‚êƒtƒ‰ƒO
+    private bool isTimeUp = false; // æ™‚é–“åˆ‡ã‚Œãƒ•ãƒ©ã‚°
 
     void Start()
     {
@@ -23,38 +23,53 @@ public class TimerController : MonoBehaviour
 
     void Update()
     {
-        // ŠÔØ‚ê‚È‚çXVˆ—‚ğƒXƒLƒbƒv
+        // æ™‚é–“åˆ‡ã‚Œãªã‚‰æ›´æ–°å‡¦ç†ã‚’ã‚¹ã‚­ãƒƒãƒ—
         if (isTimeUp)
         {
             return;
         }
 
-        // **Time.deltaTime**i‘OƒtƒŒ[ƒ€‚©‚ç‚ÌŒo‰ßŠÔj‚ğg‚Á‚Ä³Šm‚ÉŠÔ‚ğŒ¸‚ç‚·
+        // **Time.deltaTime**ï¼ˆå‰ãƒ•ãƒ¬ãƒ¼ãƒ ã‹ã‚‰ã®çµŒéæ™‚é–“ï¼‰ã‚’ä½¿ã£ã¦æ­£ç¢ºã«æ™‚é–“ã‚’æ¸›ã‚‰ã™
         currentTime -= Time.deltaTime;
 
         UpdateTimerDisplay();
 
-        // c‚èŠÔ‚ª0ˆÈ‰º‚É‚È‚Á‚½‚ç
+        // æ®‹ã‚Šæ™‚é–“ãŒ0ä»¥ä¸‹ã«ãªã£ãŸã‚‰
         if (currentTime <= 0)
         {
             currentTime = 0;
             isTimeUp = true;
-            TimeUpAction(); // ŠÔØ‚ê‚Ìˆ—‚ğÀs
+            TimeUpAction(); // æ™‚é–“åˆ‡ã‚Œæ™‚ã®å‡¦ç†ã‚’å®Ÿè¡Œ
         }
     }
 
-    // UI‚Ì•\¦‚ğXV‚·‚éˆ—
+    // UIã®è¡¨ç¤ºã‚’æ›´æ–°ã™ã‚‹å‡¦ç†
     void UpdateTimerDisplay()
     {
-        // c‚èŠÔ‚ğ•b’PˆÊ‚Ì®”‚É•ÏŠ·‚µA"c‚èŠÔ: 59" ‚ÌŒ`®‚Å•\¦
+        // æ®‹ã‚Šæ™‚é–“ã‚’ç§’å˜ä½ã®æ•´æ•°ã«å¤‰æ›ã—ã€"æ®‹ã‚Šæ™‚é–“: 59" ã®å½¢å¼ã§è¡¨ç¤º
         int seconds = Mathf.FloorToInt(currentTime);
-        timerText.text = "c‚èŠÔ: " + seconds.ToString("D2"); // D2 ‚Í2Œ…•\¦i—á: 05j
+        timerText.text = "æ®‹ã‚Šæ™‚é–“: " + seconds.ToString("D2"); // D2 ã¯2æ¡è¡¨ç¤ºï¼ˆä¾‹: 05ï¼‰
     }
 
-    // ŠÔØ‚ê‚Ìˆ—iƒQ[ƒ€ƒI[ƒo[AƒV[ƒ“ˆÚ“®‚È‚Çj
+    // æ™‚é–“åˆ‡ã‚Œæ™‚ã®å‡¦ç†ï¼ˆã‚²ãƒ¼ãƒ ã‚ªãƒ¼ãƒãƒ¼ã€ã‚·ãƒ¼ãƒ³ç§»å‹•ãªã©ï¼‰
     void TimeUpAction()
     {
-        Debug.Log("§ŒÀŠÔI—¹IƒQ[ƒ€ƒI[ƒo[‚Å‚·B");
-        // —á: SceneManager.LoadScene("GameOverScene");
+        Debug.Log("åˆ¶é™æ™‚é–“çµ‚äº†ï¼ã‚²ãƒ¼ãƒ ã‚ªãƒ¼ãƒãƒ¼ã§ã™ã€‚");
+        // ä¾‹: SceneManager.LoadScene("GameOverScene");
+    }
+
+    // âœ… æ™‚é–“ã‚’å¢—ã‚„ã™
+    public void AddTime(float amount)
+    {
+        currentTime += amount;
+        Debug.Log($"æ™‚é–“åŠ ç®— +{amount}ç§’");
+    }
+
+    // âœ… æ™‚é–“ã‚’æ¸›ã‚‰ã™
+    public void ReduceTime(float amount)
+    {
+        currentTime -= amount;
+        if (currentTime < 0) currentTime = 0;
+        Debug.Log($"æ™‚é–“æ¸›å°‘ -{amount}ç§’");
     }
 }

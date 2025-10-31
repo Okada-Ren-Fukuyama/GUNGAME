@@ -148,3 +148,5 @@ MonoBehaviour:
   rareScore: 30
   badScore: -40
   targetType: 0
+  floatingTextPrefab: {fileID: 3786333949958067549, guid: b2d0dae5d9abe62489447896a11ceba1, type: 3}
+  canvas: {fileID: 0}
