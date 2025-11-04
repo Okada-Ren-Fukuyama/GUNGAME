@@ -70,24 +70,38 @@ public class TargetSpawner : MonoBehaviour
             // --- タイプ判定 ---
             float roll = Random.value;
             Image img = target.GetComponent<Image>();
-            Target t = target.GetComponent<Target>();
+            Target tg = target.GetComponent<Target>();
 
-            if (img != null && t != null)
+            if (img != null && tg != null)
             {
                 if (roll < badChance)
                 {
-                    img.color = Color.blue;   // 減点的
-                    t.targetType = TargetType.Bad;
+                    // 減点的（青）
+                    img.color = Color.blue;
+                    tg.targetType = TargetType.Bad;
                 }
                 else if (roll < badChance + rareChance)
                 {
-                    img.color = Color.red;    // レア的
-                    t.targetType = TargetType.Rare;
+                    // レア的（赤）
+                    img.color = Color.red;
+                    tg.targetType = TargetType.Rare;
+                }
+                else if (roll < badChance + rareChance + 0.1f)
+                {
+                    // 時間減少的（水色）
+                    img.color = Color.cyan;
+                    tg.targetType = TargetType.TimeMinus;
+                }
+                else if (roll < badChance + rareChance + 0.2f)
+                {
+                    // 時間増加的（緑）
+                    img.color = Color.green;
+                    tg.targetType = TargetType.TimePlus;
                 }
                 else
                 {
                     img.color = Color.gray;   // 通常的
-                    t.targetType = TargetType.Normal;
+                    tg.targetType = TargetType.Normal;
                 }
             }
         }

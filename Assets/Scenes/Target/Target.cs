@@ -8,7 +8,9 @@ public enum TargetType
 {
     Normal,  // 通常的（+10点）
     Rare,    // レア的（+30点）
-    Bad      // マイナス的（−40点）
+    Bad,      // マイナス的（−40点）
+    TimePlus,   // ⏱時間追加
+    TimeMinus   // ⏱時間減少
 }
 
 public class Target : MonoBehaviour, IPointerClickHandler
@@ -50,9 +52,12 @@ public class Target : MonoBehaviour, IPointerClickHandler
     private Image image;
     private float lifeTime;
     private float scale;
+    public GameObject floatingTextPrefab;
+    public Canvas canvas;
 
     void Start()
     {
+
         image = GetComponent<Image>();
 
         // サイズ決定（小さいほどレアっぽくなる）
@@ -69,6 +74,15 @@ public class Target : MonoBehaviour, IPointerClickHandler
             lifeTime *= rareLifeMultiplier;
 
         Destroy(gameObject, lifeTime);
+    }
+
+    void Awake()
+    {
+        canvas = FindObjectOfType<Canvas>();
+        if (canvas == null)
+        {
+            Debug.LogError("❌ Canvas がシーンに見つかりません");
+        }
     }
 
     // --- 色を更新する ---
@@ -88,6 +102,7 @@ public class Target : MonoBehaviour, IPointerClickHandler
                 case TargetType.Bad:
                     image.color = badColor;
                     break;
+
             }
         }
     }
@@ -96,28 +111,73 @@ public class Target : MonoBehaviour, IPointerClickHandler
     {
         Debug.Log($"ターゲットクリック！タイプ: {targetType}");
 
-        // スコア加算／減点処理
         ScoreManager sm = FindObjectOfType<ScoreManager>();
-        if (sm != null)
-        {
-            int addPoint = 0;
-            switch (targetType)
-            {
-                case TargetType.Normal:
-                    addPoint = normalScore;
-                    break;
-                case TargetType.Rare:
-                    addPoint = rareScore;
-                    break;
-                case TargetType.Bad:
-                    addPoint = badScore;
-                    break;
-            }
+        TimerController timer = FindObjectOfType<TimerController>();
 
-            sm.AddScore(addPoint);
+        int addPoint = 0;
+        string text = "";
+        Color color = Color.white;
+
+        switch (targetType)
+        {
+            case TargetType.Normal:
+                addPoint = normalScore;
+                text = "+" + normalScore;
+                color = Color.yellow;
+                break;
+
+            case TargetType.Rare:
+                addPoint = rareScore;
+                text = "+" + rareScore;
+                color = Color.magenta;
+                break;
+
+            case TargetType.Bad:
+                addPoint = badScore;
+                text = badScore.ToString();
+                color = Color.red;
+                break;
+
+            case TargetType.TimePlus:
+                timer?.AddTime(3f);
+                text = "+3s";
+                color = Color.green;
+                break;
+
+            case TargetType.TimeMinus:
+                timer?.ReduceTime(3f);
+                text = "-3s";
+                color = Color.cyan;
+                break;
         }
 
+        sm?.AddScore(addPoint);
+        ShowFloatingText(text, color);
+
         Destroy(gameObject);
+    }
+
+    // ✅ OnPointerClickの外に書く
+    void ShowFloatingText(string text, Color color)
+    {
+        if (floatingTextPrefab == null)
+        {
+            Debug.LogError("❌ floatingTextPrefab が未設定です（Inspectorで指定して）");
+            return;
+        }
+
+        if (canvas == null)
+        {
+            Debug.LogError("❌ Canvas が見つかりません！FindObjectOfType 失敗");
+            return;
+        }
+
+        GameObject obj = Instantiate(floatingTextPrefab, canvas.transform);
+        obj.transform.position = transform.position;
+
+        var ctrl = obj.GetComponent<FloatingTextController>();
+        if (ctrl != null)
+            ctrl.Show(text, color);
     }
 }
 
