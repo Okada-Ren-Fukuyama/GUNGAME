@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 1845373578212422857}
   - component: {fileID: 2597047646812822680}
   - component: {fileID: 5531564632333020564}
-  - component: {fileID: 3612026282800155140}
   - component: {fileID: -2739639702027948584}
+  - component: {fileID: 6918525128795173762}
   m_Layer: 5
   m_Name: Target
   m_TagString: Untagged
@@ -78,7 +78,35 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3612026282800155140
+--- !u!114 &-2739639702027948584
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6899679453590837442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aeca41bb7f063744c9a5a6c172689b5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  minLifeTime: 2
+  maxLifeTime: 5
+  minScale: 0.6
+  maxScale: 1.2
+  rarityPower: 1
+  rareThreshold: 0.75
+  normalColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  rareColor: {r: 1, g: 0, b: 0, a: 1}
+  badColor: {r: 0, g: 0, b: 1, a: 1}
+  rareLifeMultiplier: 0.3
+  normalScore: 10
+  rareScore: 30
+  badScore: -40
+  targetType: 0
+  floatingTextPrefab: {fileID: 3786333949958067549, guid: 75adeef1a7dd44b42b12e3a1fa41aa10, type: 3}
+  canvas: {fileID: 0}
+--- !u!114 &6918525128795173762
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -122,31 +150,3 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &-2739639702027948584
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6899679453590837442}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca87980f58bf5444eb8e8ecf2da9e3a4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  minLifeTime: 2
-  maxLifeTime: 6
-  minScale: 0.6
-  maxScale: 1.2
-  rarityPower: 1
-  rareThreshold: 0.75
-  normalColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  rareColor: {r: 1, g: 0, b: 0, a: 1}
-  badColor: {r: 0, g: 0, b: 1, a: 1}
-  rareLifeMultiplier: 0.3
-  normalScore: 10
-  rareScore: 30
-  badScore: -40
-  targetType: 0
-  floatingTextPrefab: {fileID: 3786333949958067549, guid: b2d0dae5d9abe62489447896a11ceba1, type: 3}
-  canvas: {fileID: 0}

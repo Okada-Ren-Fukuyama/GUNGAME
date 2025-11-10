@@ -110,6 +110,7 @@ public class Target : MonoBehaviour, IPointerClickHandler
     public void OnPointerClick(PointerEventData eventData)
     {
         Debug.Log($"ターゲットクリック！タイプ: {targetType}");
+        Debug.Log("🎯 OnPointerClickが呼ばれた！");
 
         ScoreManager sm = FindObjectOfType<ScoreManager>();
         TimerController timer = FindObjectOfType<TimerController>();

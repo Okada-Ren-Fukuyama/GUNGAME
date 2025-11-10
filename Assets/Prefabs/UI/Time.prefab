@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2135047472727451972
+--- !u!1 &5379579704215578353
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,10 +8,10 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2135047472727451973}
-  - component: {fileID: 2135047472727451975}
-  - component: {fileID: 2135047472727451974}
-  - component: {fileID: 2135047472727451968}
+  - component: {fileID: 5379579704215578352}
+  - component: {fileID: 5379579704215578365}
+  - component: {fileID: 5379579704215578354}
+  - component: {fileID: 5379579704215578355}
   m_Layer: 5
   m_Name: Time
   m_TagString: Untagged
@@ -19,13 +19,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!224 &2135047472727451973
+--- !u!224 &5379579704215578352
 RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2135047472727451972}
+  m_GameObject: {fileID: 5379579704215578353}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -39,21 +39,21 @@ RectTransform:
   m_AnchoredPosition: {x: 759.93, y: 505.1}
   m_SizeDelta: {x: 600, y: 150}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!222 &2135047472727451975
+--- !u!222 &5379579704215578365
 CanvasRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2135047472727451972}
+  m_GameObject: {fileID: 5379579704215578353}
   m_CullTransparentMesh: 1
---- !u!114 &2135047472727451974
+--- !u!114 &5379579704215578354
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2135047472727451972}
+  m_GameObject: {fileID: 5379579704215578353}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
@@ -81,19 +81,19 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: New Text
---- !u!114 &2135047472727451968
+--- !u!114 &5379579704215578355
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2135047472727451972}
+  m_GameObject: {fileID: 5379579704215578353}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 616046a6d3d616c4a960e311d5f397ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   timeLimit: 60
-  timerText: {fileID: 2135047472727451974}
+  timerText: {fileID: 5379579704215578354}
   timeUpPanel: {fileID: 0}
   finalScoreText: {fileID: 0}

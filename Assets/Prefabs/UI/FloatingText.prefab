@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5607650238351601332}
   - component: {fileID: 8180246848132551680}
   - component: {fileID: 4287087648022557461}
-  - component: {fileID: 4907308186837812914}
+  - component: {fileID: 3935093512842133189}
   m_Layer: 5
   m_Name: FloatingText
   m_TagString: Untagged
@@ -149,7 +149,7 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &4907308186837812914
+--- !u!114 &3935093512842133189
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -158,7 +158,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3786333949958067549}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 12661e0f2e8980346a33d233b2685cec, type: 3}
+  m_Script: {fileID: 11500000, guid: 003675bb2c2813344a719e064ca31199, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   moveUpSpeed: 60
