@@ -152,6 +152,20 @@ public class Target : MonoBehaviour, IPointerClickHandler
         }
 
         sm?.AddScore(addPoint);
+        if (sm != null && addPoint > 0)
+        {
+            int comboCount = sm.GetComboCount();
+            float multiplier = sm.GetComboMultiplier();
+
+            if (comboCount > 1)
+                text = $"+{addPoint} (x{multiplier:F1} COMBO {comboCount})";
+            else
+                text = $"+{addPoint}";
+        }
+        else if (addPoint < 0)
+        {
+            text = addPoint.ToString();
+        }
         ShowFloatingText(text, color);
 
         Destroy(gameObject);

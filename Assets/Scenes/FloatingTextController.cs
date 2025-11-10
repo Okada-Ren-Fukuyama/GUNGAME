@@ -16,6 +16,8 @@ public class FloatingTextController : MonoBehaviour
     {
         text = GetComponent<TextMeshProUGUI>();
         canvasGroup = GetComponent<CanvasGroup>();
+
+        text.fontSize = 60;
     }
 
     public void Show(string value, Color color)
