@@ -161,5 +161,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12661e0f2e8980346a33d233b2685cec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveUpSpeed: 50
-  fadeSpeed: 2
+  moveUpSpeed: 60
+  fadeSpeed: 1

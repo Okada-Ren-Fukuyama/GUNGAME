@@ -35,9 +35,11 @@ public class TargetSpawner : MonoBehaviour
     [Range(0f, 1f)] public float badChance = 0.3f;
 
     private List<GameObject> spawnedTargets = new List<GameObject>();
+    private TimerController timer;
 
     void Start()
     {
+        timer = FindObjectOfType<TimerController>();
         StartCoroutine(SpawnLoop());
     }
 
@@ -45,6 +47,11 @@ public class TargetSpawner : MonoBehaviour
     {
         while (true)
         {
+            if (timer != null && timer.IsTimeUp())
+            {
+                yield break; // このコルーチンを終了（スポーン停止）
+            }
+
             SpawnTarget();
 
             float wait = Random.Range(minSpawnInterval, maxSpawnInterval);

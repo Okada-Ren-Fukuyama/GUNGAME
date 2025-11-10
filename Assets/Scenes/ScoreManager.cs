@@ -55,11 +55,11 @@ public class ScoreManager : MonoBehaviour
             comboTimer = comboDuration;
 
             // コンボ倍率計算
-            if (comboCount >= 5)
+            if (comboCount >= 15)
                 comboMultiplier = 2.0f;
-            else if (comboCount >= 3)
+            else if (comboCount >= 10)
                 comboMultiplier = 1.5f;
-            else if (comboCount >= 2)
+            else if (comboCount >= 5)
                 comboMultiplier = 1.2f;
             else
                 comboMultiplier = 1.0f;
@@ -109,5 +109,10 @@ public class ScoreManager : MonoBehaviour
     public float GetComboMultiplier()
     {
         return comboMultiplier;
+    }
+
+    public int GetScore()
+    {
+        return score;
     }
 }

@@ -6,8 +6,8 @@ using TMPro;
 
 public class FloatingTextController : MonoBehaviour
 {
-    public float moveUpSpeed = 50f;
-    public float fadeSpeed = 2f;
+    public float moveUpSpeed = 60f;
+    public float fadeSpeed = 1f;
 
     private TextMeshProUGUI text;
     private CanvasGroup canvasGroup;
