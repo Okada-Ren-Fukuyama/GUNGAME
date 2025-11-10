@@ -1240,7 +1240,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 817d470a4fe21074a8b75a75b7d8534c, type: 3}
-=======
   m_GameObject: {fileID: 1511099923}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -1325,4 +1324,3 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
->>>>>>> 5694a2b8e4627d2dbd492eb4c6b5b336a8055066
