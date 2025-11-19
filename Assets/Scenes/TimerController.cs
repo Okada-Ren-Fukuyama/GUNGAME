@@ -100,6 +100,11 @@ public class TimerController : MonoBehaviour
         Debug.Log($"時間減少 -{amount}秒");
     }
 
+    public float GetRemainingTime()
+    {
+        return currentTime;
+    }
+
     public bool IsTimeUp()
     {
         return isTimeUp;

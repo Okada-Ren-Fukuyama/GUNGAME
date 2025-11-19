@@ -34,6 +34,13 @@ public class TargetSpawner : MonoBehaviour
     [Header("マイナス的の出現確率(0〜1)")]
     [Range(0f, 1f)] public float badChance = 0.3f;
 
+    [Header("時間経過で変化する調整値")]
+    public float difficultyIncreaseRate = 1.0f; // 難易度上昇スピード倍率（大きいほど早く難しくなる）
+
+    [Header("難易度アップ演出")]
+    public Text difficultyUpText;
+    private bool[] levelTriggered = new bool[3]; // 3段階（30%, 60%, 90%）で発火
+
     private List<GameObject> spawnedTargets = new List<GameObject>();
     private TimerController timer;
 
@@ -146,6 +153,64 @@ public class TargetSpawner : MonoBehaviour
     void Update()
     {
         spawnedTargets.RemoveAll(t => t == null);
+        if (timer == null) return;
+
+        // ------ 秒数による経過 ------
+        float remaining = timer.GetRemainingTime();
+        float elapsed = timer.timeLimit - remaining;          // 経過時間（秒）
+        elapsed = Mathf.Max(0, elapsed);                      // マイナス防止
+
+        // ------ 時間経過で難易度を変化させる ------
+        float progress = elapsed / timer.timeLimit;
+        progress = Mathf.Clamp01(progress);
+
+        minSpawnInterval = Mathf.Lerp(1.2f, 0.6f, progress * difficultyIncreaseRate);
+        maxSpawnInterval = Mathf.Lerp(2.5f, 1.0f, progress * difficultyIncreaseRate);
+
+        minSpawnCount = Mathf.RoundToInt(Mathf.Lerp(2, 4, progress * difficultyIncreaseRate));
+        maxSpawnCount = Mathf.RoundToInt(Mathf.Lerp(5, 8, progress * difficultyIncreaseRate));
+
+        rareChance = Mathf.Lerp(0.1f, 0.3f, progress * difficultyIncreaseRate);
+        badChance = Mathf.Lerp(0.2f, 0.4f, progress * difficultyIncreaseRate);
+
+        // ------ 難易度UP演出（秒でトリガー） ------
+        if (elapsed >= 20f && !levelTriggered[0])
+        {
+            StartCoroutine(ShowDifficultyUpText("難易度UP!"));
+            levelTriggered[0] = true;
+        }
+        else if (elapsed >= 40f && !levelTriggered[1])
+        {
+            StartCoroutine(ShowDifficultyUpText("さらに難易度UP!"));
+            levelTriggered[1] = true;
+        }
+        else if (elapsed >= 50f && !levelTriggered[2])
+        {
+            StartCoroutine(ShowDifficultyUpText("最終段階!!"));
+            levelTriggered[2] = true;
+        }
+    }
+
+    IEnumerator ShowDifficultyUpText(string message)
+    {
+        if (difficultyUpText == null) yield break;
+
+        difficultyUpText.text = message;
+        difficultyUpText.gameObject.SetActive(true);
+        difficultyUpText.color = new Color(1, 1, 0, 1); // 黄・不透明
+
+        float fadeTime = 1.5f;
+        float t = 0;
+
+        while (t < fadeTime)
+        {
+            t += Time.deltaTime;
+            float alpha = Mathf.Lerp(1f, 0f, t / fadeTime);
+            difficultyUpText.color = new Color(1, 1, 0, alpha);
+            yield return null;
+        }
+
+        difficultyUpText.gameObject.SetActive(false);
     }
 }
 
