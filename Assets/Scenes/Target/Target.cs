@@ -43,6 +43,10 @@ public class Target : MonoBehaviour, IPointerClickHandler
     [Range(0.1f, 1f)]
     public float rareLifeMultiplier = 0.3f;
 
+    [Header("当たりエフェクト（パーティクル）")]
+    public GameObject hitParticlePrefab;
+    public Camera mainCamera;
+
     public int normalScore = 10;   // 通常的の得点
     public int rareScore = 30;     // レア的のスコア
     public int badScore = -40;     // マイナス的のスコア
@@ -78,11 +82,14 @@ public class Target : MonoBehaviour, IPointerClickHandler
 
     void Awake()
     {
+        // Canvas 自動取得
         canvas = FindObjectOfType<Canvas>();
         if (canvas == null)
-        {
             Debug.LogError("❌ Canvas がシーンに見つかりません");
-        }
+
+        // MainCamera 自動取得
+        if (mainCamera == null)
+            mainCamera = Camera.main;
     }
 
     // --- 色を更新する ---
@@ -168,6 +175,7 @@ public class Target : MonoBehaviour, IPointerClickHandler
             text = addPoint.ToString();
         }
         ShowFloatingText(text, color);
+        ShowHitParticle();
 
         Destroy(gameObject);
     }
@@ -194,6 +202,26 @@ public class Target : MonoBehaviour, IPointerClickHandler
         if (ctrl != null)
             ctrl.Show(text, color);
     }
+
+    void ShowHitParticle()
+    {
+        if (hitParticlePrefab == null)
+        {
+            Debug.LogError("❌ hitParticlePrefab がセットされていません（Inspectorに設定して）");
+            return;
+        }
+
+        if (mainCamera == null)
+            mainCamera = Camera.main;
+
+        // UI座標 → ワールド座標
+        Vector3 worldPos = mainCamera.ScreenToWorldPoint(transform.position);
+        worldPos.z = 0f;
+
+        Instantiate(hitParticlePrefab, worldPos, Quaternion.identity);
+    }
+
+   
 }
 
 
