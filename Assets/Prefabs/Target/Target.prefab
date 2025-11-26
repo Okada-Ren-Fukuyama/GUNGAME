@@ -100,6 +100,8 @@ MonoBehaviour:
   rareColor: {r: 1, g: 0, b: 0, a: 1}
   badColor: {r: 0, g: 0, b: 1, a: 1}
   rareLifeMultiplier: 0.3
+  hitParticlePrefab: {fileID: 7403863852189992212, guid: 68c929cc24880ff4bbf1577ff0823795, type: 3}
+  mainCamera: {fileID: 0}
   normalScore: 10
   rareScore: 30
   badScore: -40
