@@ -78,7 +78,7 @@ public class TargetSpawner : MonoBehaviour
             if (randomPos == Vector2.zero) continue;
 
             GameObject target = Instantiate(targetPrefab, targetArea);
-            target.transform.position = randomPos;
+            target.GetComponent<RectTransform>().localPosition = randomPos;
             spawnedTargets.Add(target);
 
             // --- タイプ判定 ---
@@ -123,20 +123,25 @@ public class TargetSpawner : MonoBehaviour
 
     Vector2 GetSafeRandomPosition()
     {
+        // RectTransform のサイズ取得
         Vector2 areaSize = targetArea.rect.size;
+
         for (int i = 0; i < 20; i++)
         {
+            // ① ローカル座標でランダム生成
             float x = Random.Range(-areaSize.x / 2 + marginX, areaSize.x / 2 - marginX);
             float y = Random.Range(-areaSize.y / 2 + marginY, areaSize.y / 2 - marginY);
             Vector2 localPos = new Vector2(x, y);
-            Vector2 worldPos = targetArea.TransformPoint(localPos);
 
+            // ② 既存ターゲットとの距離チェック（ローカル空間で行う）
             bool tooClose = false;
+
             foreach (var t in spawnedTargets)
             {
                 if (t == null) continue;
-                float dist = Vector2.Distance(worldPos, t.transform.position);
-                if (dist < minDistance)
+
+                Vector2 tLocal = t.GetComponent<RectTransform>().localPosition;
+                if (Vector2.Distance(localPos, tLocal) < minDistance)
                 {
                     tooClose = true;
                     break;
@@ -144,7 +149,7 @@ public class TargetSpawner : MonoBehaviour
             }
 
             if (!tooClose)
-                return worldPos;
+                return localPos;
         }
 
         return Vector2.zero;

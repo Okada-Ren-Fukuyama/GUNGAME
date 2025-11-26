@@ -203,25 +203,29 @@ public class Target : MonoBehaviour, IPointerClickHandler
             ctrl.Show(text, color);
     }
 
+
+
     void ShowHitParticle()
     {
         if (hitParticlePrefab == null)
         {
-            Debug.LogError("❌ hitParticlePrefab がセットされていません（Inspectorに設定して）");
+            Debug.LogError("❌ hitParticlePrefab がセットされていません");
             return;
         }
 
         if (mainCamera == null)
             mainCamera = Camera.main;
 
-        // UI座標 → ワールド座標
-        Vector3 worldPos = mainCamera.ScreenToWorldPoint(transform.position);
-        worldPos.z = 0f;
+        // RectTransform → 世界座標（UIの見たままの位置）
+        Vector3 worldPos = transform.position;
+
+        // Zを少し手前へ（UIと同じ平面だと見えない）
+        worldPos.z = -9f;
 
         Instantiate(hitParticlePrefab, worldPos, Quaternion.identity);
     }
 
-   
+
 }
 
 
