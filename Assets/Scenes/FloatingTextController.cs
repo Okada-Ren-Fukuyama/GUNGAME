@@ -6,7 +6,6 @@ using TMPro;
 
 public class FloatingTextController : MonoBehaviour
 {
-    public float moveUpSpeed = 60f;
     public float fadeSpeed = 1f;
 
     private TextMeshProUGUI text;
@@ -24,17 +23,20 @@ public class FloatingTextController : MonoBehaviour
     {
         text.text = value;
         text.color = color;
+
+        // その場でフェードアウト
+        StartCoroutine(FadeOut());
     }
 
-    void Update()
+    IEnumerator FadeOut()
     {
-        transform.Translate(Vector3.up * moveUpSpeed * Time.deltaTime);
-        canvasGroup.alpha -= fadeSpeed * Time.deltaTime;
-
-        if (canvasGroup.alpha <= 0)
+        while (canvasGroup.alpha > 0)
         {
-            Destroy(gameObject);
+            canvasGroup.alpha -= fadeSpeed * Time.deltaTime;
+            yield return null;
         }
+
+        Destroy(gameObject);
     }
 }
 
