@@ -106,6 +106,7 @@ public class TimerController : MonoBehaviour
     public void StartTimer()
     {
         isRunning = true;
+        isTimeUp = false;
     }
 
     // ★ 追加：ゲーム停止用（任意）

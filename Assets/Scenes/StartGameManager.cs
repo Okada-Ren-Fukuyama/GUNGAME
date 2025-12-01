@@ -1,33 +1,42 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class StartGameManager : MonoBehaviour
 {
-    public GameObject startPanel;      // StartPanel を入れる
-    public GameObject targetSpawner;   // TargetSpawner を入れる
-    public TimerController timer;      // TimerController を入れる
-
-    void Start()
-    {
-        // ゲーム開始前はスポーンを止めておく（重要！）
-        targetSpawner.SetActive(false);
-
-        // タイマーも止めておく（必要なら）
-        if (timer != null)
-            timer.isRunning = false;
-    }
+    public GameObject startPanel;       // StartPanel
+    public GameObject targetSpawner;    // TargetSpawner
+    public TimerController timer;       // TimerController
+    public Text countdownText;
 
     public void StartGame()
     {
-        // スタート画面を非表示
-        startPanel.SetActive(false);
+        startPanel.SetActive(false);     // スタート画面を消す
+        StartCoroutine(CountdownRoutine());
+    }
 
-        // スポーン開始
-        targetSpawner.SetActive(true);
+    IEnumerator CountdownRoutine()
+    {
+        countdownText.gameObject.SetActive(true);
 
-        // タイマー開始
-        if (timer != null)
-            timer.StartTimer();
+        int count = 3;
+
+        while (count > 0)
+        {
+            countdownText.text = count.ToString();
+            yield return new WaitForSeconds(1f);
+            count--;
+        }
+
+        // 最後に "START!!"
+        countdownText.text = "START!!";
+        yield return new WaitForSeconds(0.8f);
+
+        countdownText.gameObject.SetActive(false);
+
+        // ---- カウントダウン後にゲーム開始 ----
+        targetSpawner.SetActive(true);  // 的スポーン開始
+        timer.StartTimer();             // タイマー開始
     }
 }

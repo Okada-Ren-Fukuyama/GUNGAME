@@ -60,3 +60,5 @@ MonoBehaviour:
   minDistance: 120
   rareChance: 0.1
   badChance: 0.3
+  difficultyIncreaseRate: 1
+  difficultyUpText: {fileID: 0}
