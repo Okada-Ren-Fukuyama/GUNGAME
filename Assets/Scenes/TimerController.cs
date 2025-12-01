@@ -1,21 +1,20 @@
 ﻿using UnityEngine;
-using UnityEngine.UI; // Text (Legacy) の場合// using TMPro; // Text Mesh Pro の場合
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class TimerController : MonoBehaviour
 {
-    // 制限時間をInspectorから設定 (例: 120.0f で 2分)
-    public float timeLimit = 60.0f;
-
-    // 現在の残り時間
+    public float timeLimit = 60.0f;   // 制限時間
     private float currentTime;
 
-    // 画面に時間を表示するためのUIコンポーネント
-    public Text timerText;// TextMeshProの場合は public TMPro.TextMeshProUGUI timerText;
+    public Text timerText;
     public GameObject timeUpPanel;
     public Text finalScoreText;
 
-    private bool isTimeUp = false; // 時間切れフラグ
+    private bool isTimeUp = false;
+
+    // ★ 追加：ゲーム開始前かどうか
+    public bool isRunning = false;
 
     void Start()
     {
@@ -24,43 +23,42 @@ public class TimerController : MonoBehaviour
 
         if (timeUpPanel != null)
             timeUpPanel.SetActive(false);
+
+        // ★ ゲーム開始前は動かさない
+        isRunning = false;
     }
 
     void Update()
     {
-        // 時間切れなら更新処理をスキップ
-        if (isTimeUp)
-        {
-            return;
-        }
+        // ★ 動いていなければ時間減らさない
+        if (!isRunning) return;
 
-        // **Time.deltaTime**（前フレームからの経過時間）を使って正確に時間を減らす
+        // 時間切れなら止める
+        if (isTimeUp)
+            return;
+
         currentTime -= Time.deltaTime;
 
         UpdateTimerDisplay();
 
-        // 残り時間が0以下になったら
         if (currentTime <= 0)
         {
             currentTime = 0;
             isTimeUp = true;
-            TimeUpAction(); // 時間切れ時の処理を実行
+            isRunning = false;   // ★ 追加：時間切れで停止
+            TimeUpAction();
         }
     }
 
-    // UIの表示を更新する処理
     void UpdateTimerDisplay()
     {
-        // 残り時間を秒単位の整数に変換し、"残り時間: 59" の形式で表示
         int seconds = Mathf.FloorToInt(currentTime);
-        timerText.text = "残り時間: " + seconds.ToString("D2"); // D2 は2桁表示（例: 05）
+        timerText.text = "残り時間: " + seconds.ToString("D2");
     }
 
-    // 時間切れ時の処理（ゲームオーバー、シーン移動など）
     void TimeUpAction()
     {
-        Debug.Log("制限時間終了！ゲームオーバーです。");
-        // 例: SceneManager.LoadScene("GameOverScene");
+        Debug.Log("制限時間終了！ゲームオーバー");
 
         if (timeUpPanel != null)
         {
@@ -71,28 +69,22 @@ public class TimerController : MonoBehaviour
             {
                 finalScoreText.text = "あなたのスコア：" + sm.GetScore();
             }
-
-
         }
-
     }
 
     public void Retry()
     {
-        Debug.Log("再挑戦ボタンが押されました。");
-        Time.timeScale = 1f; // 念のため停止解除
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name); // 現在のシーンを再読み込み
+        Debug.Log("再挑戦");
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-
-    // ✅ 時間を増やす
     public void AddTime(float amount)
     {
         currentTime += amount;
         Debug.Log($"時間加算 +{amount}秒");
     }
 
-    // ✅ 時間を減らす
     public void ReduceTime(float amount)
     {
         currentTime -= amount;
@@ -108,5 +100,17 @@ public class TimerController : MonoBehaviour
     public bool IsTimeUp()
     {
         return isTimeUp;
+    }
+
+    // ★ 追加：ゲーム開始用
+    public void StartTimer()
+    {
+        isRunning = true;
+    }
+
+    // ★ 追加：ゲーム停止用（任意）
+    public void StopTimer()
+    {
+        isRunning = false;
     }
 }
