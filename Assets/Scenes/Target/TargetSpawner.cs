@@ -16,10 +16,10 @@ public class TargetSpawner : MonoBehaviour
     public float maxSpawnInterval = 2.5f;
 
     [Header("一度に出す的の最小数")]
-    public int minSpawnCount = 2;
+    public int minSpawnCount = 3;
 
     [Header("一度に出す的の最大数")]
-    public int maxSpawnCount = 5;
+    public int maxSpawnCount = 4;
 
     [Header("エリアの余白（左右・上下の調整）")]
     public float marginX = 100f;
@@ -32,7 +32,7 @@ public class TargetSpawner : MonoBehaviour
     [Range(0f, 1f)] public float rareChance = 0.1f;
 
     [Header("マイナス的の出現確率(0〜1)")]
-    [Range(0f, 1f)] public float badChance = 0.3f;
+    [Range(0f, 1f)] public float badChance = 0.2f;
 
     [Header("時間経過で変化する調整値")]
     public float difficultyIncreaseRate = 1.0f; // 難易度上昇スピード倍率（大きいほど早く難しくなる）
