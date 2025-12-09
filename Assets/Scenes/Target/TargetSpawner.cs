@@ -47,6 +47,8 @@ public class TargetSpawner : MonoBehaviour
     void Start()
     {
         timer = FindObjectOfType<TimerController>();
+
+
         StartCoroutine(SpawnLoop());
     }
 
@@ -155,67 +157,94 @@ public class TargetSpawner : MonoBehaviour
         return Vector2.zero;
     }
 
-    void Update()
-    {
-        spawnedTargets.RemoveAll(t => t == null);
-        if (timer == null) return;
 
-        // ------ 秒数による経過 ------
-        float remaining = timer.GetRemainingTime();
-        float elapsed = timer.timeLimit - remaining;          // 経過時間（秒）
-        elapsed = Mathf.Max(0, elapsed);                      // マイナス防止
-
-        // ------ 時間経過で難易度を変化させる ------
-        float progress = elapsed / timer.timeLimit;
-        progress = Mathf.Clamp01(progress);
-
-        minSpawnInterval = Mathf.Lerp(1.2f, 0.6f, progress * difficultyIncreaseRate);
-        maxSpawnInterval = Mathf.Lerp(2.5f, 1.0f, progress * difficultyIncreaseRate);
-
-        minSpawnCount = Mathf.RoundToInt(Mathf.Lerp(2, 4, progress * difficultyIncreaseRate));
-        maxSpawnCount = Mathf.RoundToInt(Mathf.Lerp(5, 8, progress * difficultyIncreaseRate));
-
-        rareChance = Mathf.Lerp(0.1f, 0.3f, progress * difficultyIncreaseRate);
-        badChance = Mathf.Lerp(0.2f, 0.4f, progress * difficultyIncreaseRate);
-
-        // ------ 難易度UP演出（秒でトリガー） ------
-        if (elapsed >= 20f && !levelTriggered[0])
-        {
-            StartCoroutine(ShowDifficultyUpText("難易度UP!"));
-            levelTriggered[0] = true;
-        }
-        else if (elapsed >= 40f && !levelTriggered[1])
-        {
-            StartCoroutine(ShowDifficultyUpText("さらに難易度UP!"));
-            levelTriggered[1] = true;
-        }
-        else if (elapsed >= 50f && !levelTriggered[2])
-        {
-            StartCoroutine(ShowDifficultyUpText("最終段階!!"));
-            levelTriggered[2] = true;
-        }
-    }
 
     IEnumerator ShowDifficultyUpText(string message)
     {
-        if (difficultyUpText == null) yield break;
+        Debug.Log("★★★ ShowDifficultyUpText 実行");
 
-        difficultyUpText.text = message;
-        difficultyUpText.gameObject.SetActive(true);
-        difficultyUpText.color = new Color(1, 1, 0, 1); // 黄・不透明
-
-        float fadeTime = 1.5f;
-        float t = 0;
-
-        while (t < fadeTime)
+        if (difficultyUpText == null)
         {
-            t += Time.deltaTime;
-            float alpha = Mathf.Lerp(1f, 0f, t / fadeTime);
-            difficultyUpText.color = new Color(1, 1, 0, alpha);
-            yield return null;
+            Debug.LogError("difficultyUpText が null！");
+            yield break;
         }
 
+        // 表示ON
+        difficultyUpText.gameObject.SetActive(true);
+
+        difficultyUpText.text = message;
+        difficultyUpText.color = Color.white;
+
+        Debug.Log("ActiveSelf: " + difficultyUpText.gameObject.activeSelf);
+        Debug.Log("ActiveInHierarchy: " + difficultyUpText.gameObject.activeInHierarchy);
+
+        // 5秒間表示
+        yield return new WaitForSeconds(5f);
+
         difficultyUpText.gameObject.SetActive(false);
+    }
+
+    public void SetDifficultyByLevel(int level)
+    {
+        Debug.Log("★ SetDifficultyByLevel 呼ばれた！ level = " + level);
+
+        if (level == 1)
+        {
+            minSpawnInterval = 1.2f;
+            maxSpawnInterval = 2.5f;
+
+            minSpawnCount = 2;
+            maxSpawnCount = 4;
+
+            rareChance = 0.1f;
+            badChance = 0.2f;
+
+        }
+        else if (level == 2)
+        {
+            minSpawnInterval = 0.9f;
+            maxSpawnInterval = 1.8f;
+
+            minSpawnCount = 3;
+            maxSpawnCount = 5;
+
+            rareChance = 0.15f;
+            badChance = 0.25f;
+
+            StartCoroutine(ShowDifficultyUpText("LEVEL UP!"));
+        }
+        else if (level == 3)
+        {
+            minSpawnInterval = 0.6f;
+            maxSpawnInterval = 1.2f;
+
+            minSpawnCount = 4;
+            maxSpawnCount = 7;
+
+            rareChance = 0.2f;
+            badChance = 0.3f;
+
+            StartCoroutine(ShowDifficultyUpText("LEVEL UP!"));
+        }
+        else if (level == 4)
+        {
+            minSpawnInterval = 0.4f;
+            maxSpawnInterval = 0.9f;
+
+            minSpawnCount = 5;
+            maxSpawnCount = 9;
+
+            rareChance = 0.3f;
+            badChance = 0.4f;
+
+            StartCoroutine(ShowDifficultyUpText("LEVEL UP!!!"));
+        }
+    }
+
+    void Awake()
+    {
+        if (difficultyUpText != null)
+            difficultyUpText.gameObject.SetActive(false);
     }
 }
 

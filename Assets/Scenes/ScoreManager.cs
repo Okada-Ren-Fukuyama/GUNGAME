@@ -16,10 +16,31 @@ public class ScoreManager : MonoBehaviour
 
     private float comboMultiplier = 1.0f; // スコア倍率
 
+    [Header("レベル管理")]
+    public int level = 1;   // 現在の難易度レベル
+
+    public int[] levelTargets = new int[]
+    {
+    0,      // ダミー
+    100,   // Lv1 → Lv2
+    250,   // Lv2 → Lv3
+    500,   // Lv3 → Lv4
+    900    // Lv4 → Lv5
+    };
+
+    public Text levelText;  // Lv表示用（任意）
+
+    // 🔽 TargetSpawnerを直接操作する
+    public TargetSpawner targetSpawner;
+
     void Start()
     {
         UpdateScoreText();
         UpdateComboText();
+        UpdateLevelText();
+        if (targetSpawner != null)
+            targetSpawner.SetDifficultyByLevel(level);
+
     }
 
     void Update()
@@ -75,6 +96,7 @@ public class ScoreManager : MonoBehaviour
 
         UpdateScoreText();
         UpdateComboText();
+        CheckLevelUp();
 
         Debug.Log($"スコア +{finalAdd}（コンボ: {comboCount}, 倍率: {comboMultiplier}）");
     }
@@ -115,4 +137,36 @@ public class ScoreManager : MonoBehaviour
     {
         return score;
     }
+
+    void CheckLevelUp()
+    {
+        if (level < levelTargets.Length)
+        {
+            if (score >= levelTargets[level])
+            {
+                level++;
+
+                Debug.Log("レベルアップ！ 現在Lv：" + level);
+
+                UpdateLevelText();
+
+                // ✅ これを必ず呼ぶ！！
+                if (targetSpawner != null)
+                {
+                    targetSpawner.SetDifficultyByLevel(level);
+                }
+                else
+                {
+                    Debug.LogError("ScoreManager の targetSpawner が未設定です！");
+                }
+            }
+        }
+    }
+
+    void UpdateLevelText()
+    {
+        if (levelText != null)
+            levelText.text = "Lv : " + level;
+    }
+
 }
