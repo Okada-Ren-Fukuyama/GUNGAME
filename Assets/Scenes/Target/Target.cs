@@ -58,6 +58,7 @@ public class Target : MonoBehaviour, IPointerClickHandler
     private float scale;
     public GameObject floatingTextPrefab;
     public Canvas canvas;
+    public AudioSource hitSE;
 
     void Start()
     {
@@ -82,6 +83,8 @@ public class Target : MonoBehaviour, IPointerClickHandler
 
     void Awake()
     {
+        hitSE = GetComponent<AudioSource>();
+
         // Canvas 自動取得
         canvas = FindObjectOfType<Canvas>();
         if (canvas == null)
@@ -116,6 +119,11 @@ public class Target : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (hitSE != null && hitSE.clip != null)
+        {
+            AudioSource.PlayClipAtPoint(hitSE.clip, Camera.main.transform.position);
+        }
+
         Debug.Log($"ターゲットクリック！タイプ: {targetType}");
         Debug.Log("🎯 OnPointerClickが呼ばれた！");
 
@@ -177,7 +185,7 @@ public class Target : MonoBehaviour, IPointerClickHandler
         ShowFloatingText(text, color);
         ShowHitParticle();
 
-        Destroy(gameObject);
+        Destroy(gameObject,0.2f);
     }
 
     // ✅ OnPointerClickの外に書く
