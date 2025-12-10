@@ -1,42 +1,89 @@
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class StartGameManager : MonoBehaviour
 {
-    public GameObject startPanel;       // StartPanel
-    public GameObject targetSpawner;    // TargetSpawner
-    public TimerController timer;       // TimerController
-    public Text countdownText;
+    // =========================
+    // ■ UI
+    // =========================
+
+    [Header("UI")]
+    [SerializeField] private GameObject startPanel;   // スタート画面
+    [SerializeField] private Text countdownText;     // カウントダウン表示
+
+    // =========================
+    // ■ ゲーム制御
+    // =========================
+
+    [Header("ゲーム制御")]
+    [SerializeField] private TargetSpawner targetSpawner;
+    [SerializeField] private TimerController timer;
+
+    // =========================
+    // ■ スタートボタンから呼ばれる
+    // =========================
 
     public void StartGame()
     {
-        startPanel.SetActive(false);     // �X�^�[�g��ʂ�����
+        if (startPanel != null)
+            startPanel.SetActive(false);
+
         StartCoroutine(CountdownRoutine());
     }
 
+    // =========================
+    // ■ カウントダウン処理
+    // =========================
+
     IEnumerator CountdownRoutine()
     {
+        if (countdownText == null)
+        {
+            Debug.LogError("StartGameManager：countdownText が未設定です！");
+            yield break;
+        }
+
         countdownText.gameObject.SetActive(true);
 
-        int count = 3;
-
-        while (count > 0)
+        for (int count = 3; count > 0; count--)
         {
             countdownText.text = count.ToString();
             yield return new WaitForSeconds(1f);
-            count--;
         }
 
-        // �Ō�� "START!!"
         countdownText.text = "START!!";
         yield return new WaitForSeconds(0.8f);
 
         countdownText.gameObject.SetActive(false);
 
-        // ---- �J�E���g�_�E����ɃQ�[���J�n ----
-        targetSpawner.SetActive(true);  // �I�X�|�[���J�n
-        timer.StartTimer();             // �^�C�}�[�J�n
+        Debug.Log("★ カウントダウン終了：ゲーム開始");
+
+        StartGameCore();
+    }
+
+    // =========================
+    // ■ 本当のゲーム開始処理
+    // =========================
+
+    void StartGameCore()
+    {
+        if (targetSpawner != null)
+        {
+            targetSpawner.StartGame();   // ✅ GetComponent 不要
+        }
+        else
+        {
+            Debug.LogError("StartGameManager：TargetSpawner が未設定です！");
+        }
+
+        if (timer != null)
+        {
+            timer.StartTimer();
+        }
+        else
+        {
+            Debug.LogError("StartGameManager：TimerController が未設定です！");
+        }
     }
 }
