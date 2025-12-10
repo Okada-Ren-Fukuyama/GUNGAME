@@ -5,92 +5,106 @@ using UnityEngine.UI;
 
 public class ScoreManager : MonoBehaviour
 {
+    // =========================
+    // ■ UI
+    // =========================
+
     [Header("UI")]
-    public Text scoreText;       // スコア表示
-    public Text comboText;       // コンボ表示（Canvas上にTextを追加）
+    [SerializeField] private Text scoreText;
+    [SerializeField] private Text comboText;
+    [SerializeField] private Text levelText;
 
-    private int score = 0;       // 現在のスコア
-    private int comboCount = 0;  // 現在のコンボ数
-    private float comboTimer = 0f; // コンボが続く残り時間
-    private float comboDuration = 2.0f; // コンボ継続時間（秒）
+    // =========================
+    // ■ スコア・コンボ管理
+    // =========================
 
-    private float comboMultiplier = 1.0f; // スコア倍率
+    private int score = 0;
+    private int comboCount = 0;
+
+    private float comboTimer = 0f;
+    [SerializeField] private float comboDuration = 2.0f;
+
+    private float comboMultiplier = 1.0f;
+
+    // =========================
+    // ■ レベル管理
+    // =========================
 
     [Header("レベル管理")]
-    public int level = 1;   // 現在の難易度レベル
+    [SerializeField] private int level = 1;
 
-    public int[] levelTargets = new int[]
+    [SerializeField]
+    private int[] levelTargets = new int[]
     {
-    0,      // ダミー
-    100,   // Lv1 → Lv2
-    250,   // Lv2 → Lv3
-    500,   // Lv3 → Lv4
-    900    // Lv4 → Lv5
+        0,    // ダミー
+        100,  // Lv1 → Lv2
+        250,  // Lv2 → Lv3
+        500,  // Lv3 → Lv4
+        900   // Lv4 → Lv5
     };
 
-    public Text levelText;  // Lv表示用（任意）
+    // =========================
+    // ■ 他スクリプト参照
+    // =========================
 
-    // 🔽 TargetSpawnerを直接操作する
-    public TargetSpawner targetSpawner;
+    [Header("外部参照")]
+    [SerializeField] private TargetSpawner targetSpawner;
+    [SerializeField] private UIEffectManager uiEffectManager;
+
+    // =========================
+    // ■ 初期化
+    // =========================
 
     void Start()
     {
         UpdateScoreText();
         UpdateComboText();
         UpdateLevelText();
+
         if (targetSpawner != null)
-            targetSpawner.SetDifficultyByLevel(level);
-
-    }
-
-    void Update()
-    {
-        // コンボの残り時間カウントダウン
-        if (comboCount > 0)
         {
-            comboTimer -= Time.deltaTime;
-            if (comboTimer <= 0)
-            {
-                comboCount = 0;
-                comboMultiplier = 1.0f;
-                UpdateComboText();
-            }
+            targetSpawner.SetDifficultyByLevel(level);
+        }
+        else
+        {
+            Debug.LogWarning("ScoreManager：TargetSpawner が設定されていません");
         }
     }
 
-    // 🔸 スコアを増減
-    public void AddScore(int amount)
+    // =========================
+    // ■ 更新処理
+    // =========================
+
+    void Update()
     {
-        // 🔸 スコア0（=時間加算など）はコンボ維持
-        if (amount < 0)
+        UpdateComboTimer();
+    }
+
+    void UpdateComboTimer()
+    {
+        if (comboCount <= 0) return;
+
+        comboTimer -= Time.deltaTime;
+
+        if (comboTimer <= 0f)
         {
-            // 減点的のときだけリセット
             comboCount = 0;
             comboMultiplier = 1.0f;
             UpdateComboText();
         }
-        else if (amount > 0)
-        {
-            // コンボ継続
-            comboCount++;
-            comboTimer = comboDuration;
+    }
 
-            // コンボ倍率計算
-            if (comboCount >= 15)
-                comboMultiplier = 2.0f;
-            else if (comboCount >= 10)
-                comboMultiplier = 1.5f;
-            else if (comboCount >= 5)
-                comboMultiplier = 1.2f;
-            else
-                comboMultiplier = 1.0f;
-        }
+    // =========================
+    // ■ スコア加算
+    // =========================
 
-        // 最終加算スコア
+    public void AddScore(int amount)
+    {
+        UpdateCombo(amount);
+
         int finalAdd = Mathf.RoundToInt(amount * comboMultiplier);
         score += finalAdd;
 
-        // スコアが0未満にならないように
         if (score < 0)
             score = 0;
 
@@ -101,66 +115,86 @@ public class ScoreManager : MonoBehaviour
         Debug.Log($"スコア +{finalAdd}（コンボ: {comboCount}, 倍率: {comboMultiplier}）");
     }
 
-    private void UpdateScoreText()
+    void UpdateCombo(int amount)
+    {
+        // 減点 → コンボリセット
+        if (amount < 0)
+        {
+            comboCount = 0;
+            comboMultiplier = 1.0f;
+            return;
+        }
+
+        // 加点 → コンボ継続
+        if (amount > 0)
+        {
+            comboCount++;
+            comboTimer = comboDuration;
+
+            if (comboCount >= 15)
+                comboMultiplier = 2.0f;
+            else if (comboCount >= 10)
+                comboMultiplier = 1.5f;
+            else if (comboCount >= 5)
+                comboMultiplier = 1.2f;
+            else
+                comboMultiplier = 1.0f;
+        }
+    }
+
+    // =========================
+    // ■ レベルアップ判定
+    // =========================
+
+    void CheckLevelUp()
+    {
+        if (level >= levelTargets.Length) return;
+
+        if (score >= levelTargets[level])
+        {
+            level++;
+            Debug.Log("レベルアップ！ 現在Lv：" + level);
+
+            UpdateLevelText();
+
+            if (targetSpawner != null)
+            {
+                targetSpawner.SetDifficultyByLevel(level);
+            }
+            else
+            {
+                Debug.LogError("ScoreManager：targetSpawner が未設定です！");
+            }
+
+            if (uiEffectManager != null)
+            {
+                uiEffectManager.ShowLevelUp("LEVEL UP!");
+            }
+            else
+            {
+                Debug.LogWarning("ScoreManager：UIEffectManager が未設定です！");
+            }
+        }
+    }
+
+    // =========================
+    // ■ UI更新
+    // =========================
+
+    void UpdateScoreText()
     {
         if (scoreText != null)
             scoreText.text = "Score: " + score;
     }
 
-    private void UpdateComboText()
+    void UpdateComboText()
     {
         if (comboText == null) return;
 
         if (comboCount <= 1)
-        {
             comboText.text = "";
-        }
         else
-        {
-            comboText.text = "COMBO x" + comboCount + "  (" + comboMultiplier.ToString("F1") + "x)";
-        }
-    }
-
-    // 現在のコンボ数を取得
-    public int GetComboCount()
-    {
-        return comboCount;
-    }
-
-    // 現在の倍率を取得
-    public float GetComboMultiplier()
-    {
-        return comboMultiplier;
-    }
-
-    public int GetScore()
-    {
-        return score;
-    }
-
-    void CheckLevelUp()
-    {
-        if (level < levelTargets.Length)
-        {
-            if (score >= levelTargets[level])
-            {
-                level++;
-
-                Debug.Log("レベルアップ！ 現在Lv：" + level);
-
-                UpdateLevelText();
-
-                // ✅ これを必ず呼ぶ！！
-                if (targetSpawner != null)
-                {
-                    targetSpawner.SetDifficultyByLevel(level);
-                }
-                else
-                {
-                    Debug.LogError("ScoreManager の targetSpawner が未設定です！");
-                }
-            }
-        }
+            comboText.text = $"COMBO x{comboCount}  ({comboMultiplier:F1}x)";
     }
 
     void UpdateLevelText()
@@ -169,4 +203,11 @@ public class ScoreManager : MonoBehaviour
             levelText.text = "Lv : " + level;
     }
 
+    // =========================
+    // ■ 外部取得用（Getter）
+    // =========================
+
+    public int GetScore() => score;
+    public int GetComboCount() => comboCount;
+    public float GetComboMultiplier() => comboMultiplier;
 }

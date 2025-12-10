@@ -6,15 +6,19 @@ using UnityEngine.EventSystems;
 
 public enum TargetType
 {
-    Normal,  // 通常的（+10点）
-    Rare,    // レア的（+30点）
-    Bad,      // マイナス的（−40点）
-    TimePlus,   // ⏱時間追加
-    TimeMinus   // ⏱時間減少
+    Normal,
+    Rare,
+    Bad,
+    TimePlus,
+    TimeMinus
 }
 
 public class Target : MonoBehaviour, IPointerClickHandler
 {
+    // =========================
+    // ■ 設定（Inspector）
+    // =========================
+
     [Header("寿命（秒）")]
     public float minLifeTime = 2f;
     public float maxLifeTime = 5f;
@@ -23,109 +27,109 @@ public class Target : MonoBehaviour, IPointerClickHandler
     public float minScale = 0.6f;
     public float maxScale = 1.2f;
 
-    [Header("小さい的が出にくくなる強さ")]
+    [Header("レア度係数")]
     [Range(1f, 5f)]
     public float rarityPower = 1.0f;
 
-    [Header("レア的のしきい値（これ以下ならレア色に）")]
-    public float rareThreshold = 0.75f;
-
-    [Header("通常の色")]
-    public Color normalColor = Color.gray;
-
-    [Header("レア的の色")]
-    public Color rareColor = Color.red;
-
-    [Header("マイナス的の色")]
-    public Color badColor = Color.blue;
-
-    [Header("レア的の寿命を短くする倍率（0.5 = 半分の時間）")]
+    [Header("寿命倍率")]
     [Range(0.1f, 1f)]
     public float rareLifeMultiplier = 0.3f;
 
-    [Header("当たりエフェクト（パーティクル）")]
-    public GameObject hitParticlePrefab;
-    public Camera mainCamera;
+    [Header("スコア")]
+    public int normalScore = 10;
+    public int rareScore = 30;
+    public int badScore = -40;
 
-    public int normalScore = 10;   // 通常的の得点
-    public int rareScore = 30;     // レア的のスコア
-    public int badScore = -40;     // マイナス的のスコア
+    [Header("表示色")]
+    public Color normalColor = Color.gray;
+    public Color rareColor = Color.red;
+    public Color badColor = Color.blue;
+
+    [Header("演出")]
+    public GameObject hitParticlePrefab;
+    public GameObject floatingTextPrefab;
+    public AudioSource hitSE;
+
+    [Header("参照")]
+    public Camera mainCamera;
+    public Canvas canvas;
 
     public TargetType targetType = TargetType.Normal;
 
+    // =========================
+    // ■ 内部変数
+    // =========================
+
     private Image image;
     private float lifeTime;
-    private float scale;
-    public GameObject floatingTextPrefab;
-    public Canvas canvas;
-    public AudioSource hitSE;
+
+    // =========================
+    // ■ 初期化
+    // =========================
+
+    void Awake()
+    {
+        image = GetComponent<Image>();
+        hitSE = GetComponent<AudioSource>();
+
+        canvas = FindObjectOfType<Canvas>();
+        if (mainCamera == null)
+            mainCamera = Camera.main;
+    }
 
     void Start()
     {
-
-        image = GetComponent<Image>();
-
-        // サイズ決定（小さいほどレアっぽくなる）
-        float t = Random.value;
-        t = Mathf.Pow(t, rarityPower);
-        scale = Mathf.Lerp(minScale, maxScale, t);
-        transform.localScale = new Vector3(scale, scale, 1f);
-
+        SetupScale();
         ApplyVisualState();
+        SetupLifeTime();
+    }
 
-        // 寿命設定
+    // =========================
+    // ■ 初期設定
+    // =========================
+
+    void SetupScale()
+    {
+        float t = Mathf.Pow(Random.value, rarityPower);
+        float scale = Mathf.Lerp(minScale, maxScale, t);
+        transform.localScale = new Vector3(scale, scale, 1f);
+    }
+
+    void SetupLifeTime()
+    {
         lifeTime = Random.Range(minLifeTime, maxLifeTime);
+
         if (targetType == TargetType.Rare)
             lifeTime *= rareLifeMultiplier;
 
         Destroy(gameObject, lifeTime);
     }
 
-    void Awake()
+    void ApplyVisualState()
     {
-        hitSE = GetComponent<AudioSource>();
+        if (image == null) return;
 
-        // Canvas 自動取得
-        canvas = FindObjectOfType<Canvas>();
-        if (canvas == null)
-            Debug.LogError("❌ Canvas がシーンに見つかりません");
-
-        // MainCamera 自動取得
-        if (mainCamera == null)
-            mainCamera = Camera.main;
-    }
-
-    // --- 色を更新する ---
-    private void ApplyVisualState()
-    {
-        if (image == null) image = GetComponent<Image>();
-        if (image != null)
+        switch (targetType)
         {
-            switch (targetType)
-            {
-                case TargetType.Normal:
-                    image.color = normalColor;
-                    break;
-                case TargetType.Rare:
-                    image.color = rareColor;
-                    break;
-                case TargetType.Bad:
-                    image.color = badColor;
-                    break;
-
-            }
+            case TargetType.Normal:
+                image.color = normalColor;
+                break;
+            case TargetType.Rare:
+                image.color = rareColor;
+                break;
+            case TargetType.Bad:
+                image.color = badColor;
+                break;
         }
     }
+
+    // =========================
+    // ■ クリック処理
+    // =========================
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (hitSE != null && hitSE.clip != null)
-        {
-            AudioSource.PlayClipAtPoint(hitSE.clip, Camera.main.transform.position);
-        }
-
-        Debug.Log($"ターゲットクリック！タイプ: {targetType}");
-        Debug.Log("🎯 OnPointerClickが呼ばれた！");
+        PlaySE();
 
         ScoreManager sm = FindObjectOfType<ScoreManager>();
         TimerController timer = FindObjectOfType<TimerController>();
@@ -168,76 +172,55 @@ public class Target : MonoBehaviour, IPointerClickHandler
         }
 
         sm?.AddScore(addPoint);
-        if (sm != null && addPoint > 0)
-        {
-            int comboCount = sm.GetComboCount();
-            float multiplier = sm.GetComboMultiplier();
+        text = BuildComboText(sm, addPoint, text);
 
-            if (comboCount > 1)
-                text = $"+{addPoint} (x{multiplier:F1} COMBO {comboCount})";
-            else
-                text = $"+{addPoint}";
-        }
-        else if (addPoint < 0)
-        {
-            text = addPoint.ToString();
-        }
         ShowFloatingText(text, color);
         ShowHitParticle();
 
-        Destroy(gameObject,0.2f);
+        Destroy(gameObject, 0.2f);
     }
 
-    // ✅ OnPointerClickの外に書く
+    // =========================
+    // ■ 表示系
+    // =========================
+
+    string BuildComboText(ScoreManager sm, int addPoint, string baseText)
+    {
+        if (sm == null || addPoint <= 0) return baseText;
+
+        int combo = sm.GetComboCount();
+        float mul = sm.GetComboMultiplier();
+
+        if (combo > 1)
+            return $"+{addPoint} (x{mul:F1} COMBO {combo})";
+
+        return baseText;
+    }
+
     void ShowFloatingText(string text, Color color)
     {
-        if (floatingTextPrefab == null)
-        {
-            Debug.LogError("❌ floatingTextPrefab が未設定です（Inspectorで指定して）");
-            return;
-        }
-
-        if (canvas == null)
-        {
-            Debug.LogError("❌ Canvas が見つかりません！FindObjectOfType 失敗");
-            return;
-        }
+        if (floatingTextPrefab == null || canvas == null) return;
 
         GameObject obj = Instantiate(floatingTextPrefab, canvas.transform);
         obj.transform.position = transform.position;
 
         var ctrl = obj.GetComponent<FloatingTextController>();
-        if (ctrl != null)
-            ctrl.Show(text, color);
+        ctrl?.Show(text, color);
     }
-
-
 
     void ShowHitParticle()
     {
-        if (hitParticlePrefab == null)
-        {
-            Debug.LogError("❌ hitParticlePrefab がセットされていません");
-            return;
-        }
+        if (hitParticlePrefab == null || mainCamera == null) return;
 
-        if (mainCamera == null)
-            mainCamera = Camera.main;
-
-        // RectTransform → 世界座標（UIの見たままの位置）
         Vector3 worldPos = transform.position;
-
-        // Zを少し手前へ（UIと同じ平面だと見えない）
         worldPos.z = -9f;
 
         Instantiate(hitParticlePrefab, worldPos, Quaternion.identity);
     }
 
-
+    void PlaySE()
+    {
+        if (hitSE != null && hitSE.clip != null)
+            AudioSource.PlayClipAtPoint(hitSE.clip, mainCamera.transform.position);
+    }
 }
-
-
-
-
-
-

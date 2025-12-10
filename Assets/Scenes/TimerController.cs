@@ -4,80 +4,122 @@ using UnityEngine.SceneManagement;
 
 public class TimerController : MonoBehaviour
 {
-    public float timeLimit = 60.0f;   // 制限時間
+    // =========================
+    // ■ 設定
+    // =========================
+
+    [Header("時間設定")]
+    [SerializeField] private float timeLimit = 60.0f;
+
+    // =========================
+    // ■ UI
+    // =========================
+
+    [Header("UI")]
+    [SerializeField] private Text timerText;
+    [SerializeField] private GameObject timeUpPanel;
+    [SerializeField] private Text finalScoreText;
+
+    // =========================
+    // ■ 内部状態
+    // =========================
+
     private float currentTime;
-
-    public Text timerText;
-    public GameObject timeUpPanel;
-    public Text finalScoreText;
-
     private bool isTimeUp = false;
 
-    // ★ 追加：ゲーム開始前かどうか
-    public bool isRunning = false;
+    [Header("実行状態")]
+    [SerializeField] private bool isRunning = false;
+
+    // =========================
+    // ■ 初期化
+    // =========================
 
     void Start()
     {
-        currentTime = timeLimit;
-        UpdateTimerDisplay();
+        ResetTimer();
 
         if (timeUpPanel != null)
             timeUpPanel.SetActive(false);
 
-        // ★ ゲーム開始前は動かさない
         isRunning = false;
     }
 
+    // =========================
+    // ■ 更新処理
+    // =========================
+
     void Update()
     {
-        // ★ 動いていなければ時間減らさない
-        if (!isRunning) return;
-
-        // 時間切れなら止める
-        if (isTimeUp)
-            return;
+        if (!isRunning || isTimeUp) return;
 
         currentTime -= Time.deltaTime;
-
         UpdateTimerDisplay();
 
-        if (currentTime <= 0)
+        if (currentTime <= 0f)
         {
-            currentTime = 0;
+            currentTime = 0f;
             isTimeUp = true;
-            isRunning = false;   // ★ 追加：時間切れで停止
+            isRunning = false;
+
             TimeUpAction();
         }
     }
 
+    // =========================
+    // ■ 表示更新
+    // =========================
+
     void UpdateTimerDisplay()
     {
+        if (timerText == null) return;
+
         int seconds = Mathf.FloorToInt(currentTime);
         timerText.text = "残り時間: " + seconds.ToString("D2");
     }
+
+    // =========================
+    // ■ タイムアップ処理
+    // =========================
 
     void TimeUpAction()
     {
         Debug.Log("制限時間終了！ゲームオーバー");
 
         if (timeUpPanel != null)
-        {
             timeUpPanel.SetActive(true);
 
-            ScoreManager sm = FindObjectOfType<ScoreManager>();
-            if (finalScoreText != null && sm != null)
-            {
-                finalScoreText.text = "あなたのスコア：" + sm.GetScore();
-            }
+        ScoreManager sm = FindObjectOfType<ScoreManager>();
+        if (finalScoreText != null && sm != null)
+        {
+            finalScoreText.text = "あなたのスコア：" + sm.GetScore();
         }
     }
 
-    public void Retry()
+    // =========================
+    // ■ 制御系API（外部から呼ばれる）
+    // =========================
+
+    public void StartTimer()
     {
-        Debug.Log("再挑戦");
-        Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        ResetTimer();
+        isRunning = true;
+        isTimeUp = false;
     }
+
+    public void StopTimer()
+    {
+        isRunning = false;
+    }
+
+    public void ResetTimer()
+    {
+        currentTime = timeLimit;
+        UpdateTimerDisplay();
+    }
+
+    // =========================
+    // ■ 時間操作
+    // =========================
 
     public void AddTime(float amount)
     {
@@ -88,9 +130,16 @@ public class TimerController : MonoBehaviour
     public void ReduceTime(float amount)
     {
         currentTime -= amount;
-        if (currentTime < 0) currentTime = 0;
+
+        if (currentTime < 0f)
+            currentTime = 0f;
+
         Debug.Log($"時間減少 -{amount}秒");
     }
+
+    // =========================
+    // ■ 状態取得
+    // =========================
 
     public float GetRemainingTime()
     {
@@ -102,16 +151,14 @@ public class TimerController : MonoBehaviour
         return isTimeUp;
     }
 
-    // ★ 追加：ゲーム開始用
-    public void StartTimer()
-    {
-        isRunning = true;
-        isTimeUp = false;
-    }
+    // =========================
+    // ■ UIボタン用
+    // =========================
 
-    // ★ 追加：ゲーム停止用（任意）
-    public void StopTimer()
+    public void Retry()
     {
-        isRunning = false;
+        Debug.Log("再挑戦");
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }
