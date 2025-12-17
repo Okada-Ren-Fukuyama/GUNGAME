@@ -96,20 +96,19 @@ MonoBehaviour:
   minScale: 0.6
   maxScale: 1.2
   rarityPower: 1
-  rareThreshold: 0.75
-  normalColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-  rareColor: {r: 1, g: 0, b: 0, a: 1}
-  badColor: {r: 0, g: 0, b: 1, a: 1}
   rareLifeMultiplier: 0.3
-  hitParticlePrefab: {fileID: 8341532824605070413, guid: 8fac72cc94eb4f641b4e117f96abccad, type: 3}
-  mainCamera: {fileID: 0}
   normalScore: 10
   rareScore: 30
   badScore: -40
-  targetType: 0
+  normalColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  rareColor: {r: 1, g: 0, b: 0, a: 1}
+  badColor: {r: 0, g: 0, b: 1, a: 1}
+  hitParticlePrefab: {fileID: 8341532824605070413, guid: 8fac72cc94eb4f641b4e117f96abccad, type: 3}
   floatingTextPrefab: {fileID: 3786333949958067549, guid: 75adeef1a7dd44b42b12e3a1fa41aa10, type: 3}
-  canvas: {fileID: 0}
   hitSE: {fileID: 3753033512363568433}
+  mainCamera: {fileID: 0}
+  canvas: {fileID: 0}
+  targetType: 0
 --- !u!114 &5496523974408145701
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,7 +165,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 72109ad85c7aa2d498661c5ab9ca0175, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.2
+  m_Volume: 0.1
   m_Pitch: 1
   Loop: 0
   Mute: 0
