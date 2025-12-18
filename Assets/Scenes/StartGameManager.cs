@@ -11,6 +11,7 @@ public class StartGameManager : MonoBehaviour
     [Header("UI")]
     [SerializeField] private GameObject startPanel;   // スタート画面
     [SerializeField] private Text countdownText;     // カウントダウン表示
+    [SerializeField] private GameObject infoPanel;
 
     // =========================
     // ■ ゲーム制御
@@ -30,6 +31,16 @@ public class StartGameManager : MonoBehaviour
             startPanel.SetActive(false);
 
         StartCoroutine(CountdownRoutine());
+    }
+
+    public void OpenInfo()
+    {
+        infoPanel.SetActive(true);
+    }
+
+    public void CloseInfo()
+    {
+        infoPanel.SetActive(false);
     }
 
     // =========================
