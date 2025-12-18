@@ -1,29 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class CrosshairController : MonoBehaviour
 {
     RectTransform crosshair;
-    Canvas canvas;
 
     void Start()
     {
         crosshair = GetComponent<RectTransform>();
-        canvas = GetComponentInParent<Canvas>();
+        Cursor.visible = false; // マウスカーソルを消す（必要なら）
     }
 
     void Update()
     {
-        Vector2 mousePos;
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            canvas.transform as RectTransform,
-            Input.mousePosition,
-            canvas.worldCamera, // ←ここが重要！
-            out mousePos
-        );
-
-        crosshair.localPosition = mousePos;
+        Vector2 mousePos = Input.mousePosition;
+        crosshair.position = mousePos;
     }
 }
