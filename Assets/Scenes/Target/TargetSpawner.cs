@@ -42,6 +42,7 @@ public class TargetSpawner : MonoBehaviour
     // ----------------------------
     void Awake()
     {
+        Debug.Log("★ TargetSpawner Awake 呼ばれた");
         timer = FindObjectOfType<TimerController>();
         isGameStarted = false;
 
@@ -53,6 +54,7 @@ public class TargetSpawner : MonoBehaviour
     // ----------------------------
     public void StartGame()
     {
+        Debug.Log("★ TargetSpawner.StartGame 呼ばれた");
         isGameStarted = true;
         Debug.Log("★ Game Started");
     }
@@ -87,6 +89,8 @@ public class TargetSpawner : MonoBehaviour
     // ----------------------------
     void SpawnTarget()
     {
+        Debug.Log($"SpawnTarget called. areaSize={targetArea.rect.size}");
+
         spawnedTargets.RemoveAll(t => t == null);
 
         int spawnCount = Random.Range(minSpawnCount, maxSpawnCount + 1);
