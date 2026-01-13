@@ -5,25 +5,18 @@ using UnityEngine.UI;
 
 public class CrosshairController : MonoBehaviour
 {
-    RectTransform crosshair;
-    Canvas canvas;
-
-    void Start()
-    {
-        crosshair = GetComponent<RectTransform>();
-        canvas = GetComponentInParent<Canvas>();
-    }
+    public RectTransform crosshair; // è∆èÄImage
+    public Canvas canvas;           // CrosshairÇ™ì¸Ç¡ÇƒÇ¢ÇÈCanvas
 
     void Update()
     {
-        Vector2 mousePos;
+        Vector2 localPos;
         RectTransformUtility.ScreenPointToLocalPointInRectangle(
             canvas.transform as RectTransform,
             Input.mousePosition,
-            canvas.worldCamera, // Å©Ç±Ç±Ç™èdóvÅI
-            out mousePos
-        );
+            canvas.worldCamera,
+            out localPos);
 
-        crosshair.localPosition = mousePos;
+        crosshair.localPosition = localPos;
     }
 }
