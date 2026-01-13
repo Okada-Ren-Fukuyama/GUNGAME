@@ -21,12 +21,19 @@ public class StartGameManager : MonoBehaviour
     [SerializeField] private TargetSpawner targetSpawner;
     [SerializeField] private TimerController timer;
 
+
+    [Header("サウンド")]
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip countdownSE; // 3,2,1 の音
+    [SerializeField] private AudioClip startSE;     // START!! の音
     // =========================
     // ■ スタートボタンから呼ばれる
     // =========================
 
     public void StartGame()
     {
+
+        Debug.Log("▶ StartGameManager 実行中: " + gameObject.name);
         if (startPanel != null)
             startPanel.SetActive(false);
 
@@ -35,11 +42,23 @@ public class StartGameManager : MonoBehaviour
 
     public void OpenInfo()
     {
+        if (infoPanel == null)
+        {
+            Debug.LogError("StartGameManager：infoPanel が Inspector で設定されていません！");
+            return;
+        }
+
         infoPanel.SetActive(true);
     }
 
     public void CloseInfo()
     {
+        if (infoPanel == null)
+        {
+            Debug.LogError("StartGameManager：infoPanel が Inspector で設定されていません！");
+            return;
+        }
+
         infoPanel.SetActive(false);
     }
 
@@ -60,10 +79,18 @@ public class StartGameManager : MonoBehaviour
         for (int count = 3; count > 0; count--)
         {
             countdownText.text = count.ToString();
+
+            if (audioSource != null && countdownSE != null)
+                audioSource.PlayOneShot(countdownSE);
+
             yield return new WaitForSeconds(1f);
         }
 
         countdownText.text = "START!!";
+
+        if (audioSource != null && startSE != null)
+            audioSource.PlayOneShot(startSE);
+
         yield return new WaitForSeconds(0.8f);
 
         countdownText.gameObject.SetActive(false);
@@ -79,6 +106,8 @@ public class StartGameManager : MonoBehaviour
 
     void StartGameCore()
     {
+
+
         if (targetSpawner != null)
         {
             targetSpawner.StartGame();   // ✅ GetComponent 不要
